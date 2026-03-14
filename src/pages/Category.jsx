@@ -1,12 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import products from '../data/products.json';
 
 const Category = () => {
     const { type } = useParams();
-    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
-    // Data... (Same as before, abbreviated for brevity)
     const categoryTitles = {
         'vibrators': 'Premium Vibrators',
         'dildos': 'Sculptural Dildos',
@@ -15,22 +15,11 @@ const Category = () => {
         'wellness': 'Wellness & Care'
     };
 
-    const allProducts = [
-        { id: 1, name: 'Luxury Rechargeable Vibrator', price: '$129.99', type: 'vibrators', imgClass: 'placeholder-p1' },
-        { id: 2, name: 'Silk Rope Restraints', price: '$45.00', type: 'bdsm', imgClass: 'placeholder-p2' },
-        { id: 3, name: 'Dual Action Massager', price: '$89.99', type: 'vibrators', imgClass: 'placeholder-p3' },
-        { id: 4, name: 'Glass Pleasure Wand', price: '$55.00', type: 'dildos', imgClass: 'placeholder-p4' },
-        { id: 5, name: 'G-Spot Delight', price: '$75.00', type: 'vibrators', imgClass: 'placeholder-p1' },
-        { id: 6, name: 'Satin Blindfold', price: '$25.00', type: 'bdsm', imgClass: 'placeholder-p2' },
-        { id: 7, name: 'Remote Control Egg', price: '$65.00', type: 'couples', imgClass: 'placeholder-p3' },
-        { id: 8, name: 'Massage Oil Candle', price: '$35.00', type: 'wellness', imgClass: 'placeholder-p4' },
-    ];
-
     useEffect(() => {
         if (type) {
-            setProducts(allProducts.filter(p => p.type === type));
+            setFilteredProducts(products.filter(p => p.type === type));
         } else {
-            setProducts(allProducts);
+            setFilteredProducts(products);
         }
     }, [type]);
 
@@ -69,13 +58,21 @@ const Category = () => {
                     initial="hidden"
                     animate="show"
                 >
-                    {products.map(product => (
+                    {filteredProducts.map(product => (
                         <motion.div key={product.id} className="product-card" variants={item}>
-                            <div className={`product-img ${product.imgClass}`}></div>
+                            <div className="product-img">
+                                <div 
+                                    className="product-img-inner"
+                                    style={{ backgroundImage: `url(${product.image})` }}
+                                ></div>
+                            </div>
                             <div className="product-info">
-                                <h4>{product.name}</h4>
+                                <h4 title={product.name}>{product.name}</h4>
                                 <p className="price">{product.price}</p>
-                                <Link to={`/product/${product.id}`} className="btn btn-small" style={{ marginTop: '15px' }}>Add to Cart</Link>
+                                <div className="product-actions">
+                                    <Link to={`/product/${product.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
+                                    <Link to={`/product/${product.id}`} className="btn btn-outline btn-small">View</Link>
+                                </div>
                             </div>
                         </motion.div>
                     ))}

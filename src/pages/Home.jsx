@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import products from '../data/products.json';
 
 const Home = () => {
+    // Pick 4 random trending products
+    const trendingProducts = [...products].sort(() => 0.5 - Math.random()).slice(0, 4);
 
     const fadeUp = (delay = 0) => ({
         initial: { opacity: 0, y: 50 },
@@ -131,16 +134,16 @@ const Home = () => {
                         className="product-grid"
                         variants={staggerGrid} initial="hidden" whileInView="show" viewport={{ once: true }}
                     >
-                        {[
-                            { id: 1, name: 'Eclipse Vibrator', price: '$149', cls: 'placeholder-p1' },
-                            { id: 2, name: 'Velvet Restraints', price: '$59', cls: 'placeholder-p2' },
-                            { id: 3, name: 'Pulse Massager', price: '$99', cls: 'placeholder-p3' },
-                            { id: 4, name: 'Crystal Wand', price: '$79', cls: 'placeholder-p4' },
-                        ].map((item) => (
+                        {trendingProducts.map((item) => (
                             <motion.div key={item.id} className="product-card" variants={staggerItem}>
-                                <div className={`product-img ${item.cls}`} />
+                                <div className="product-img">
+                                    <div 
+                                        className="product-img-inner" 
+                                        style={{ backgroundImage: `url(${item.image})` }} 
+                                    />
+                                </div>
                                 <div className="product-info">
-                                    <h4>{item.name}</h4>
+                                    <h4 title={item.name}>{item.name}</h4>
                                     <p className="price">{item.price}</p>
                                     <div className="product-actions">
                                         <Link to={`/product/${item.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
