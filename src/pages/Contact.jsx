@@ -25,8 +25,8 @@ const Contact = () => {
                 <p style={{ marginBottom: '40px', color: 'var(--text-secondary)' }}>Have questions or need support? Contact PleasureNest today.</p>
 
                 <div className="contact-info" style={{ marginBottom: '50px' }}>
-                    <p><i className="fa fa-envelope" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> support@pleasurenest.com</p>
-                    <p><i className="fa fa-phone" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> +1 (555) 123-4567</p>
+                    <p><i className="fa fa-envelope" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> <a href="mailto:openrize@gmail.com" style={{ color: 'var(--text-primary)' }}>openrize@gmail.com</a></p>
+                    <p><i className="fa fa-phone" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> <a href="tel:2243779043" style={{ color: 'var(--text-primary)' }}>(224) 377-9043</a></p>
                 </div>
 
                 <div style={{ backgroundColor: 'var(--bg-secondary)', padding: '40px', borderRadius: '4px', maxWidth: '600px', margin: '0 auto', textAlign: 'left' }}>
