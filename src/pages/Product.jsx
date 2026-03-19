@@ -1,71 +1,212 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import products from '../data/products.json';
+
+const StarRating = ({ rating = 4.7, count = 48 }) => (
+    <div className="product-stars-detail">
+        {[1,2,3,4,5].map(i => (
+            <span key={i} className={`star-lg ${i <= Math.round(rating) ? 'filled' : ''}`}>★</span>
+        ))}
+        <span className="star-score">{rating}/5</span>
+        <span className="star-count">({count} reviews)</span>
+    </div>
+);
+
+const FAQAccordion = ({ items }) => {
+    const [open, setOpen] = useState(null);
+    return (
+        <div className="product-faq">
+            <h3 style={{ marginBottom: '20px' }}>Frequently Asked Questions</h3>
+            {items.map((item, i) => (
+                <div key={i} className="faq-item" onClick={() => setOpen(open === i ? null : i)}>
+                    <div className="faq-q">
+                        {item.q}
+                        <i className={`fa fa-chevron-down faq-chevron ${open === i ? 'open' : ''}`} />
+                    </div>
+                    <div className={`faq-a ${open === i ? 'faq-a--open' : ''}`}>
+                        <p>{item.a}</p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 const Product = () => {
     const { id } = useParams();
     const [qty, setQty] = useState(1);
+    const [activeImg] = useState(0);
 
     const product = products.find(p => p.id === parseInt(id)) || {
         name: 'Product Not Found',
         price: '$0.00',
         sku: 'N/A',
-        desc: 'Sorry, we couldn\'t find the product you were looking for.'
+        type: 'unknown',
+        desc: "Sorry, we couldn't find the product you were looking for."
     };
+
+    const related = products.filter(p => p.type === product.type && p.id !== product.id).slice(0, 3);
 
     const handleAddToCart = () => {
         alert(`Added ${qty} x ${product.name} to cart!`);
     };
 
+    const levelMap = { vibrators: 'Beginner', couples: 'Intermediate', bdsm: 'Advanced', wellness: 'Beginner', dildos: 'Intermediate' };
+    const level = levelMap[product.type] || 'All Levels';
+
+    const faqItems = [
+        { q: 'Is shipping discreet?', a: 'Yes — plain unmarked box, no logos or descriptions. Billing appears as a generic business name.' },
+        { q: 'What materials is this made from?', a: 'All PleasureNest products use body-safe medical-grade silicone, glass, or metal. Zero phthalates.' },
+        { q: 'Is it waterproof?', a: 'Most vibrators and massagers in our range are IPX7 waterproof unless stated otherwise in the specs.' },
+        { q: 'What is the return policy?', a: 'Defective products can be replaced within 30 days. For hygiene reasons we cannot accept returns on opened items.' },
+    ];
+
+    const reviews = [
+        { name: 'JessicaT', rating: 5, text: 'Absolutely love it. Great quality and exactly as described. Shipping was fast and so discreet.' },
+        { name: 'M. Williams', rating: 5, text: 'My go-to shop now. The packaging was perfect and I felt totally safe buying here.' },
+        { name: 'Alex K.', rating: 4, text: 'Really good product. Took a few days to arrive but well packaged and great value.' },
+    ];
+
     return (
         <section className="section" style={{ paddingTop: '100px' }}>
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px' }}>
-                {/* Gallery */}
-                <div className="product-gallery">
-                    <div style={{ 
-                        height: '500px', 
-                        backgroundImage: `url(${product.image})`,
-                        backgroundSize: 'contain',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                        backgroundColor: '#111',
-                        borderRadius: '4px', 
-                        marginBottom: '20px' 
-                    }}></div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <div style={{ width: '80px', height: '80px', backgroundImage: `url(${product.image})`, backgroundSize: 'cover', borderRadius: '4px', cursor: 'pointer', border: '2px solid var(--accent-color)' }}></div>
+            <div className="container">
+                {/* BREADCRUMB */}
+                <div className="breadcrumb">
+                    <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / <span>{product.name}</span>
+                </div>
+
+                <div className="product-layout">
+                    {/* Gallery */}
+                    <div className="product-gallery">
+                        <div className="product-main-img" style={{
+                            backgroundImage: `url(${product.image})`,
+                            backgroundSize: 'contain',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                        }} />
+                        <div className="product-thumbs">
+                            {[product.image].map((img, i) => (
+                                <div key={i} className={`thumb ${i === activeImg ? 'thumb--active' : ''}`}
+                                    style={{ backgroundImage: `url(${img})` }} />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Meta */}
+                    <div className="product-meta">
+                        {/* Level badge */}
+                        <div className="who-badge">
+                            <span className={`level-pill level-${level.toLowerCase().replace(' ', '-')}`}>
+                                {level}
+                            </span>
+                            <span className="type-pill">{product.type}</span>
+                        </div>
+
+                        <h1>{product.name}</h1>
+                        <StarRating rating={4.7} count={48} />
+                        <div className="product-price-display">{product.price}</div>
+
+                        <p className="product-desc">{product.desc}</p>
+
+                        {/* Spec Table */}
+                        <div className="spec-table">
+                            <div className="spec-row"><span>Material</span><span>Medical-grade silicone</span></div>
+                            <div className="spec-row"><span>Waterproof</span><span>✓ IPX7</span></div>
+                            <div className="spec-row"><span>Rechargeable</span><span>✓ USB-C</span></div>
+                            <div className="spec-row"><span>Vibration Modes</span><span>10 patterns</span></div>
+                            <div className="spec-row"><span>SKU</span><span>PN-{product.id?.toString().padStart(4,'0')}</span></div>
+                        </div>
+
+                        {/* Cart */}
+                        <div className="cart-row">
+                            <input
+                                type="number"
+                                value={qty}
+                                min="1"
+                                onChange={(e) => setQty(e.target.value)}
+                                className="qty-input"
+                            />
+                            <button className="btn btn-primary btn-cart" onClick={handleAddToCart}>
+                                <i className="fa fa-shopping-bag" /> Add to Cart
+                            </button>
+                        </div>
+
+                        {/* Discreet Shipping Note */}
+                        <div className="discreet-note">
+                            <i className="fa fa-archive" />
+                            <span><strong>Discreet shipping guaranteed.</strong> Plain box, private billing. Usually ships in 1–3 business days.</span>
+                        </div>
+
+                        {/* Checkmarks */}
+                        <ul className="product-checklist">
+                            <li><i className="fa fa-check" /> Body-safe materials</li>
+                            <li><i className="fa fa-check" /> Discreet packaging</li>
+                            <li><i className="fa fa-check" /> Free returns on defective items</li>
+                            <li><i className="fa fa-check" /> SSL-secured checkout</li>
+                        </ul>
+
+                        {/* Hygiene */}
+                        <div className="hygiene-box">
+                            <strong><i className="fa fa-medkit" /> Care &amp; Hygiene</strong>
+                            <p>Clean before and after each use with warm water and mild soap or a dedicated toy cleaner. Store in the included pouch away from direct sunlight. Do not use silicone-based lubricants with silicone toys.</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Meta */}
-                <div className="product-meta">
-                    <h1 style={{ fontSize: '2rem', marginBottom: '10px', lineHeight: 1.2 }}>{product.name}</h1>
-                    <div style={{ fontSize: '2rem', color: 'var(--accent-color)', fontWeight: 700, marginBottom: '20px', fontFamily: 'var(--font-heading)' }}>{product.price}</div>
+                {/* Product FAQ */}
+                <div style={{ marginTop: '80px', maxWidth: '700px' }}>
+                    <FAQAccordion items={faqItems} />
+                </div>
 
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', fontSize: '1.1rem' }}>{product.desc}</p>
-
-                    <ul style={{ listStyle: 'none', marginBottom: '30px' }}>
-                        <li style={{ marginBottom: '10px' }}><i className="fa fa-check" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> Body-safe materials</li>
-                        <li style={{ marginBottom: '10px' }}><i className="fa fa-check" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> Discreet packaging</li>
-                        <li style={{ marginBottom: '10px' }}><i className="fa fa-check" style={{ color: 'var(--accent-color)', marginRight: '10px' }}></i> Premium quality</li>
-                    </ul>
-
-                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '40px' }}>
-                        <input
-                            type="number"
-                            value={qty}
-                            min="1"
-                            onChange={(e) => setQty(e.target.value)}
-                            style={{ width: '60px', padding: '10px', background: 'var(--bg-tertiary)', border: '1px solid #333', color: '#fff', textAlign: 'center', fontFamily: 'var(--font-body)' }}
-                        />
-                        <button className="btn btn-primary" onClick={handleAddToCart}>Add to Cart</button>
+                {/* Reviews */}
+                <div className="reviews-section">
+                    <h2>Customer Reviews</h2>
+                    <div className="reviews-summary">
+                        <div className="reviews-score">4.7</div>
+                        <div>
+                            <div className="product-stars-detail">
+                                {'★★★★★'.split('').map((s,i) => <span key={i} className="star-lg filled">{s}</span>)}
+                            </div>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Based on 48 verified reviews</p>
+                        </div>
                     </div>
-
-                    <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', borderTop: '1px solid #333', paddingTop: '20px' }}>
-                        <p><strong>Category:</strong> {product.type}</p>
-                        <p><strong>SKU:</strong> PN-DATA-{product.id}</p>
+                    <div className="reviews-grid">
+                        {reviews.map((r, i) => (
+                            <motion.div key={i} className="review-card"
+                                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                                <div className="review-stars">{'★'.repeat(r.rating)}</div>
+                                <p>"{r.text}"</p>
+                                <div className="review-author">
+                                    <strong>{r.name}</strong>
+                                    <span className="verified-badge"><i className="fa fa-check-circle" /> Verified Buyer</span>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
+
+                {/* Related Products */}
+                {related.length > 0 && (
+                    <div className="related-section">
+                        <h2>You Might Also Like</h2>
+                        <div className="related-grid">
+                            {related.map(item => (
+                                <div key={item.id} className="product-card">
+                                    <div className="product-img">
+                                        <div className="product-img-inner" style={{ backgroundImage: `url(${item.image})` }} />
+                                    </div>
+                                    <div className="product-info">
+                                        <h4>{item.name}</h4>
+                                        <p className="price">{item.price}</p>
+                                        <Link to={`/product/${item.id}`} className="btn btn-outline btn-small">View Product</Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );

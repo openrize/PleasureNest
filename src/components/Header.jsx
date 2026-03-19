@@ -14,6 +14,15 @@ const Header = () => {
 
     useEffect(() => { setMenuOpen(false); }, [location]);
 
+    const navLinks = [
+        { to: '/shop', label: 'Shop All' },
+        { to: '/shop/vibrators', label: 'Best Sellers' },
+        { to: '/shop/wellness', label: 'New Arrivals' },
+        { to: '/guides', label: 'Guides' },
+        { to: '/faq', label: 'FAQ' },
+        { to: '/contact', label: 'Contact' },
+    ];
+
     return (
         <header className={scrolled ? 'scrolled' : ''}>
             <div className="container nav-container">
@@ -23,24 +32,29 @@ const Header = () => {
 
                 <nav>
                     <ul className={`nav-links ${menuOpen ? 'active' : ''}`}>
-                        <li><NavLink to="/" end className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink></li>
-                        <li><NavLink to="/shop/vibrators" className={({ isActive }) => isActive ? 'active-link' : ''}>Vibrators</NavLink></li>
-                        <li><NavLink to="/shop/couples" className={({ isActive }) => isActive ? 'active-link' : ''}>Couples</NavLink></li>
-                        <li><NavLink to="/shop/bdsm" className={({ isActive }) => isActive ? 'active-link' : ''}>BDSM</NavLink></li>
-                        <li><NavLink to="/shop/wellness" className={({ isActive }) => isActive ? 'active-link' : ''}>Wellness</NavLink></li>
-                        <li><NavLink to="/blog" className={({ isActive }) => isActive ? 'active-link' : ''}>Journal</NavLink></li>
+                        {navLinks.map(({ to, label }) => (
+                            <li key={to}>
+                                <NavLink
+                                    to={to}
+                                    className={({ isActive }) => isActive ? 'active-link' : ''}
+                                >
+                                    {label}
+                                </NavLink>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
 
                 <div className="nav-icons">
-                    <Link to="#"><i className="fa fa-search" /></Link>
-                    <Link to="#"><i className="fa fa-shopping-bag" /></Link>
-                    <div
+                    <Link to="/shop" aria-label="Search"><i className="fa fa-search" /></Link>
+                    <Link to="/shop" aria-label="Cart"><i className="fa fa-shopping-bag" /></Link>
+                    <button
                         className="mobile-toggle"
+                        aria-label="Toggle menu"
                         onClick={() => setMenuOpen(o => !o)}
                     >
                         <i className={`fa ${menuOpen ? 'fa-times' : 'fa-bars'}`} />
-                    </div>
+                    </button>
                 </div>
             </div>
         </header>

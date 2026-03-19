@@ -23,6 +23,7 @@ function App() {
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/blog" element={<Blog />} />
+                    <Route path="/guides" element={<Blog />} />
                 </Routes>
             </Layout>
         </Router>
