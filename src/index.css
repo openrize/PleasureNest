@@ -701,11 +701,32 @@ footer p {
 
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 30px;
-    text-align: center;
+    padding: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
     font-size: 0.75rem;
     color: var(--muted);
     letter-spacing: 1px;
+}
+
+.powered-by a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.powered-by a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
 .footer-logo {

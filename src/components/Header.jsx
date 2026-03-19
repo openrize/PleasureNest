@@ -37,7 +37,13 @@ const Header = () => {
                                 <NavLink
                                     to={to}
                                     className={({ isActive }) => isActive ? 'active-link' : ''}
-                                    onClick={() => setMenuOpen(false)}
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        // Force navigation for mobile if needed
+                                        if (window.innerWidth <= 768) {
+                                            window.scrollTo(0, 0);
+                                        }
+                                    }}
                                 >
                                     {label}
                                 </NavLink>

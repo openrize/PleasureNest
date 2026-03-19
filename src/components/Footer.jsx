@@ -62,6 +62,9 @@ const Footer = () => (
 
             <div className="footer-bottom">
                 <p>&copy; {new Date().getFullYear()} PleasureNest. All Rights Reserved. | Discreet Billing &amp; Shipping Always.</p>
+                <div className="powered-by">
+                    Powered by <a href="https://www.openrize.com" target="_blank" rel="noopener noreferrer">Openrize</a>
+                </div>
             </div>
         </div>
     </footer>

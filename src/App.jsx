@@ -24,6 +24,7 @@ function App() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/guides" element={<Blog />} />
+                    <Route path="*" element={<Home />} />
                 </Routes>
             </Layout>
         </Router>
