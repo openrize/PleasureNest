@@ -116,36 +116,39 @@ const Category = () => {
                         initial="hidden"
                         animate="show"
                     >
-                        {filtered.length === 0 ? (
+                        {(!filtered || filtered.length === 0) ? (
                             <p style={{ color: 'var(--text-secondary)', gridColumn: '1/-1', textAlign: 'center', padding: '60px 0' }}>
                                 No products match your filters. Try adjusting them.
                             </p>
-                        ) : filtered.map(product => (
-                            <motion.div key={product.id} className="product-card" variants={item}>
-                            <Link to={`/product/${product.id}`} className="product-card-link">
-                                <div className="product-img">
-                                    <div
-                                        className="product-img-inner"
-                                        style={{ backgroundImage: `url(${product.image})` }}
-                                    />
-                                </div>
-                            </Link>
-                            <div className="product-info">
-                                <div className="product-stars">
-                                    {'★★★★★'.split('').map((s, i) => <span key={i} className="star">{s}</span>)}
-                                    <span className="star-count">(24)</span>
-                                </div>
-                                <Link to={`/product/${product.id}`}>
-                                    <h4 title={product.name}>{product.name}</h4>
-                                </Link>
-                                    <p className="price">{product.price}</p>
-                                    <div className="product-actions">
-                                        <Link to={`/product/${product.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
-                                        <Link to={`/product/${product.id}`} className="btn btn-outline btn-small">View</Link>
+                        ) : filtered.map(product => {
+                            if (!product || !product.id) return null;
+                            return (
+                                <motion.div key={product.id} className="product-card" variants={item}>
+                                    <Link to={`/product/${product.id}`} className="product-card-link">
+                                        <div className="product-img">
+                                            <div
+                                                className="product-img-inner"
+                                                style={{ backgroundImage: `url("${product.image || ''}")` }}
+                                            />
+                                        </div>
+                                    </Link>
+                                    <div className="product-info">
+                                        <div className="product-stars">
+                                            {'★★★★★'.split('').map((s, i) => <span key={i} className="star">{s}</span>)}
+                                            <span className="star-count">(24)</span>
+                                        </div>
+                                        <Link to={`/product/${product.id}`}>
+                                            <h4 title={product.name || 'Product'}>{product.name || 'Product'}</h4>
+                                        </Link>
+                                        <p className="price">{product.price || '$0.00'}</p>
+                                        <div className="product-actions">
+                                            <Link to={`/product/${product.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
+                                            <Link to={`/product/${product.id}`} className="btn btn-outline btn-small">View</Link>
+                                        </div>
                                     </div>
-                            </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
                 </AnimatePresence>
             </div>
