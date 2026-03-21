@@ -22,8 +22,8 @@ const AgeGate = () => {
     return (
         <div className="age-gate-overlay">
             <div className="age-gate-card">
-                <div className="age-gate-logo">
-                    Pleasure<span>Nest</span>
+                <div className="age-gate-logo-container" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'center' }}>
+                    <img src="/logo.png" alt="PleasureNest" style={{ height: '70px' }} />
                 </div>
                 <div className="age-gate-badge">18+</div>
                 <h2>Adults Only</h2>

@@ -5,7 +5,9 @@ const Footer = () => (
         <div className="container">
             <div className="footer-container">
                 <div>
-                    <span className="footer-logo">Pleasure<span>Nest</span></span>
+                    <Link to="/" className="footer-logo-link">
+                        <img src="/logo.png" alt="PleasureNest" style={{ height: '60px', marginBottom: '20px' }} />
+                    </Link>
                     <p>Your premier destination for premium intimate products. Bold, discreet, and unapologetically pleasurable.</p>
                     <div className="footer-social">
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">

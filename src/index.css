@@ -4,13 +4,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,700&family=Barlow:wght@300;400;500;700;900&display=swap');
 
 :root {
-    --black: #000000;
-    --black-rich: #0a0000;
-    --white: #f5f0f0;
-    --crimson: #9b0d25;
-    --crimson-hot: #d4122e;
-    --gold: #c9a84c;
-    --muted: #7a7070;
+    --black: #3b0000;
+    --black-rich: #660008;
+    --white: #fffafa;
+    --crimson: #e60000;
+    --crimson-hot: #ff1a1a;
+    --gold: #ffcc00;
+    --muted: #cc9999;
 
     --font-display: 'Cormorant Garamond', serif;
     --font-ui: 'Barlow', sans-serif;
@@ -143,7 +143,7 @@ header {
 }
 
 header.scrolled {
-    background: rgba(0, 0, 0, 0.92);
+    background: rgba(59, 0, 0, 0.92);
     backdrop-filter: blur(20px);
     padding: 18px 0;
     border-bottom: 1px solid rgba(155, 13, 37, 0.15);
@@ -402,7 +402,7 @@ h2.section-title {
 .cat-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 60%, transparent 100%);
+    background: linear-gradient(to top, rgba(59, 0, 0, 0.85) 0%, rgba(59, 0, 0, 0.1) 60%, transparent 100%);
     transition: opacity 0.5s;
 }
 
@@ -464,23 +464,23 @@ h2.section-title {
 
 /* placeholder gradients */
 .placeholder-vibe {
-    background: radial-gradient(ellipse at 40% 30%, #4a0d1c, #000);
+    background: radial-gradient(ellipse at 40% 30%, #cc0000, var(--black-rich));
 }
 
 .placeholder-dildo {
-    background: radial-gradient(ellipse at 60% 40%, #220a0a, #000);
+    background: radial-gradient(ellipse at 60% 40%, #990000, var(--black-rich));
 }
 
 .placeholder-couple {
-    background: radial-gradient(ellipse at 50% 50%, #2a0d28, #000);
+    background: radial-gradient(ellipse at 50% 50%, #ff1a1a, var(--black-rich));
 }
 
 .placeholder-bdsm {
-    background: radial-gradient(ellipse at 70% 70%, #111, #000);
+    background: radial-gradient(ellipse at 70% 70%, #660000, var(--black-rich));
 }
 
 .placeholder-wellness {
-    background: radial-gradient(ellipse at 30% 60%, #0a1a14, #000);
+    background: radial-gradient(ellipse at 30% 60%, #e60000, var(--black-rich));
 }
 
 /* ── PRODUCT GRID ── */
@@ -515,14 +515,14 @@ h2.section-title {
     width: 100%;
     position: relative;
     overflow: hidden;
-    background-color: #0a0a0a;
+    background-color: var(--black-rich);
 }
 
 .product-img::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%);
+    background: linear-gradient(to top, rgba(59, 0, 0, 0.6) 0%, transparent 40%);
     z-index: 1;
 }
 
@@ -659,7 +659,7 @@ h2.section-title {
 
 /* ── FOOTER ── */
 footer {
-    background: #000;
+    background: var(--black-rich);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     padding: 80px 0 40px;
 }
@@ -747,7 +747,7 @@ footer p {
 .age-gate-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.97);
+    background: rgba(59, 0, 0, 0.97);
     backdrop-filter: blur(16px);
     z-index: 9999;
     display: flex;
@@ -984,7 +984,7 @@ footer p {
 
 .product-main-img {
     height: 500px;
-    background-color: #111;
+    background-color: var(--black-rich);
     border-radius: 8px;
     margin-bottom: 16px;
 }
@@ -1599,7 +1599,7 @@ footer p {
         top: 0; left: 0;
         width: 100%;
         height: 100vh;
-        background: #000;
+        background: var(--black-rich);
         flex-direction: column;
         justify-content: center;
         align-items: center;

@@ -27,7 +27,7 @@ const Header = () => {
         <header className={scrolled ? 'scrolled' : ''}>
             <div className="container nav-container">
                 <Link to="/" className="logo">
-                    Pleasure<span>Nest</span>
+                    <img src="/logo.png" alt="PleasureNest" style={{ height: '50px' }} />
                 </Link>
 
                 <nav>
