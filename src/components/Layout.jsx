@@ -1,6 +1,7 @@
 import Header from './Header';
 import Footer from './Footer';
 import AgeGate from './AgeGate';
+import ExperimentInsights from './ExperimentInsights';
 
 const Layout = ({ children }) => {
     return (
@@ -10,6 +11,7 @@ const Layout = ({ children }) => {
             <main>
                 {children}
             </main>
+            <ExperimentInsights />
             <Footer />
         </div>
     );

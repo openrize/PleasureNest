@@ -2,6 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import products from '../data/products.json';
+import QuoteActions from '../components/QuoteActions';
+import { SALES_EMAIL, SALES_PHONE, withInventory } from '../utils/inventory';
 
 const StarRating = ({ rating = 4.7, count = 48 }) => (
     <div className="product-stars-detail">
@@ -35,22 +37,17 @@ const FAQAccordion = ({ items }) => {
 
 const Product = () => {
     const { id } = useParams();
-    const [qty, setQty] = useState(1);
     const [activeImg] = useState(0);
 
-    const product = products.find(p => p.id === parseInt(id)) || {
+    const product = withInventory(products.find(p => p.id === parseInt(id)) || {
         name: 'Product Not Found',
         price: '$0.00',
         sku: 'N/A',
         type: 'unknown',
         desc: "Sorry, we couldn't find the product you were looking for."
-    };
+    });
 
-    const related = products.filter(p => p.type === product.type && p.id !== product.id).slice(0, 3);
-
-    const handleAddToCart = () => {
-        alert(`Added ${qty} x ${product.name} to cart!`);
-    };
+    const related = products.filter(p => p.type === product.type && p.id !== product.id).map(withInventory).slice(0, 3);
 
     const levelMap = { vibrators: 'Beginner', couples: 'Intermediate', bdsm: 'Advanced', wellness: 'Beginner', dildos: 'Intermediate' };
     const level = levelMap[product.type] || 'All Levels';
@@ -105,7 +102,8 @@ const Product = () => {
 
                         <h1>{product.name}</h1>
                         <StarRating rating={4.7} count={48} />
-                        <div className="product-price-display">{product.price}</div>
+                        <div className={`stock-badge stock-badge-detail ${product.inventory.stockClass}`}>{product.inventory.stockLabel}</div>
+                        <p className="price-hidden-copy">Retail price intentionally hidden</p>
 
                         <p className="product-desc">{product.desc}</p>
 
@@ -116,20 +114,17 @@ const Product = () => {
                             <div className="spec-row"><span>Rechargeable</span><span>✓ USB-C</span></div>
                             <div className="spec-row"><span>Vibration Modes</span><span>10 patterns</span></div>
                             <div className="spec-row"><span>SKU</span><span>PN-{product.id?.toString().padStart(4,'0')}</span></div>
+                            <div className="spec-row"><span>Inventory Units</span><span>{product.inventory.units}</span></div>
                         </div>
 
-                        {/* Cart */}
-                        <div className="cart-row">
-                            <input
-                                type="number"
-                                value={qty}
-                                min="1"
-                                onChange={(e) => setQty(e.target.value)}
-                                className="qty-input"
-                            />
-                            <button className="btn btn-primary btn-cart" onClick={handleAddToCart}>
-                                <i className="fa fa-shopping-bag" /> Add to Cart
-                            </button>
+                        <div className="quote-box">
+                            <h3>Request Wholesale/Retail Pricing</h3>
+                            <p>For exact price and minimum order details, contact our sales team directly.</p>
+                            <div className="quote-contact-line">
+                                <span><i className="fa fa-phone" /> {SALES_PHONE}</span>
+                                <span><i className="fa fa-envelope" /> {SALES_EMAIL}</span>
+                            </div>
+                            <QuoteActions productName={product.name} locationTag="product_detail" />
                         </div>
 
                         {/* Discreet Shipping Note */}
@@ -199,7 +194,7 @@ const Product = () => {
                                     </div>
                                     <div className="product-info">
                                         <h4>{item.name}</h4>
-                                        <p className="price">{item.price}</p>
+                                        <p className={`stock-badge ${item.inventory.stockClass}`}>{item.inventory.stockLabel}</p>
                                         <Link to={`/product/${item.id}`} className="btn btn-outline btn-small">View Product</Link>
                                     </div>
                                 </div>

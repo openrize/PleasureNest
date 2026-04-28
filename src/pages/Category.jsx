@@ -2,14 +2,16 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import products from '../data/products.json';
+import QuoteActions from '../components/QuoteActions';
+import { getInventoryStats, withInventory } from '../utils/inventory';
 
 const Category = () => {
     const { type } = useParams();
     const [filtered, setFiltered] = useState([]);
     const [sort, setSort] = useState('featured');
     const [beginner, setBeginner] = useState(false);
-    const [waterproof, setWaterproof] = useState(false);
-    const [priceMax, setPriceMax] = useState(500);
+    const [inStockOnly, setInStockOnly] = useState(false);
+    const inventoryStats = getInventoryStats(products);
 
     const categoryTitles = {
         'vibrators': 'Premium Vibrators',
@@ -19,20 +21,19 @@ const Category = () => {
         'wellness': 'Wellness & Care'
     };
 
-    const parsePrice = (p) => parseFloat((p || '$0').replace(/[^0-9.]/g, '')) || 0;
-
     useEffect(() => {
         let list = type ? products.filter(p => p.type === type) : [...products];
+        list = list.map(withInventory);
 
         if (beginner) list = list.filter(p => p.type === 'vibrators' || p.type === 'wellness');
-        list = list.filter(p => parsePrice(p.price) <= priceMax);
+        if (inStockOnly) list = list.filter(p => p.inventory.isInStock);
 
-        if (sort === 'price-asc') list.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
-        else if (sort === 'price-desc') list.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+        if (sort === 'stock-high') list.sort((a, b) => b.inventory.units - a.inventory.units);
+        else if (sort === 'low-stock') list.sort((a, b) => Number(a.inventory.isLowStock) - Number(b.inventory.isLowStock));
         else if (sort === 'newest') list.sort((a, b) => b.id - a.id);
 
         setFiltered(list);
-    }, [type, sort, beginner, waterproof, priceMax]);
+    }, [type, sort, beginner, inStockOnly]);
 
     const tabs = [
         { label: 'All', path: '/shop' },
@@ -87,12 +88,8 @@ const Category = () => {
                             <span>Beginner-Friendly</span>
                         </label>
                         <label className="filter-toggle">
-                            <input type="checkbox" checked={waterproof} onChange={e => setWaterproof(e.target.checked)} />
-                            <span>Waterproof</span>
-                        </label>
-                        <label className="filter-price">
-                            <span>Max Price: ${priceMax}</span>
-                            <input type="range" min="10" max="500" step="10" value={priceMax} onChange={e => setPriceMax(Number(e.target.value))} />
+                            <input type="checkbox" checked={inStockOnly} onChange={e => setInStockOnly(e.target.checked)} />
+                            <span>In-Stock Only</span>
                         </label>
                     </div>
 
@@ -100,17 +97,22 @@ const Category = () => {
                         <span className="product-count">{filtered.length} products</span>
                         <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)}>
                             <option value="featured">Sort: Featured</option>
-                            <option value="price-asc">Price: Low → High</option>
-                            <option value="price-desc">Price: High → Low</option>
+                            <option value="stock-high">Inventory: High → Low</option>
+                            <option value="low-stock">Low Stock First</option>
                             <option value="newest">Newest First</option>
                         </select>
                     </div>
+                </div>
+                <div className="inventory-summary">
+                    <div className="inventory-chip stock-in">In stock: {inventoryStats.inStock}</div>
+                    <div className="inventory-chip stock-low">Low stock: {inventoryStats.lowStock}</div>
+                    <div className="inventory-chip stock-out">Out of stock: {inventoryStats.outOfStock}</div>
                 </div>
 
                 {/* Grid */}
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={type + sort + beginner + waterproof + priceMax}
+                        key={type + sort + beginner + inStockOnly}
                         className="product-grid"
                         variants={container}
                         initial="hidden"
@@ -140,11 +142,9 @@ const Category = () => {
                                         <Link to={`/product/${product.id}`}>
                                             <h4 title={product.name || 'Product'}>{product.name || 'Product'}</h4>
                                         </Link>
-                                        <p className="price">{product.price || '$0.00'}</p>
-                                        <div className="product-actions">
-                                            <Link to={`/product/${product.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
-                                            <Link to={`/product/${product.id}`} className="btn btn-outline btn-small">View</Link>
-                                        </div>
+                                        <p className={`stock-badge ${product.inventory.stockClass}`}>{product.inventory.stockLabel}</p>
+                                        <p className="price-hidden-copy">Price hidden - request quote via call or email</p>
+                                        <QuoteActions productName={product.name || 'Product'} locationTag="category_grid" />
                                     </div>
                                 </motion.div>
                             );

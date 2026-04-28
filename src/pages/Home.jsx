@@ -2,10 +2,32 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import products from '../data/products.json';
 import TrustBar from '../components/TrustBar';
+import QuoteActions from '../components/QuoteActions';
+import { withInventory } from '../utils/inventory';
 
 const Home = () => {
-    const bestSellers = [...products].slice(0, 4);
-    const beginnerPicks = [...products].filter(p => p.type === 'vibrators' || p.type === 'wellness').slice(0, 4);
+    const inventoryProducts = products.map(withInventory);
+    const categoryDefinitions = [
+        { key: 'vibrators', title: 'Vibrators', sub: 'Best for solo exploration', route: '/shop/vibrators', placeholder: 'placeholder-vibe' },
+        { key: 'couples', title: 'Couples', sub: 'Partner-focused experiences', route: '/shop/couples', placeholder: 'placeholder-couple' },
+        { key: 'bdsm', title: 'BDSM', sub: 'Power-play essentials', route: '/shop/bdsm', placeholder: 'placeholder-bdsm' },
+        { key: 'dildos', title: 'Dildos', sub: 'Classic and realistic designs', route: '/shop/dildos', placeholder: 'placeholder-dildo' },
+        { key: 'wellness', title: 'Wellness', sub: 'Care, comfort, and recovery', route: '/shop/wellness', placeholder: 'placeholder-wellness' },
+    ];
+
+    const bestSellers = [...inventoryProducts]
+        .sort((a, b) => b.inventory.units - a.inventory.units)
+        .slice(0, 4);
+    const bestSellerIds = new Set(bestSellers.map((item) => item.id));
+
+    const categoryHighlights = categoryDefinitions
+        .map((category) =>
+            inventoryProducts.find(
+                (item) => item.type === category.key && !bestSellerIds.has(item.id)
+            )
+        )
+        .filter(Boolean)
+        .slice(0, 4);
 
     const fadeUp = (delay = 0) => ({
         initial: { opacity: 0, y: 50 },
@@ -96,51 +118,26 @@ const Home = () => {
                         <h2 className="section-title">Curated for Desire</h2>
                     </motion.div>
 
-                    <motion.div
-                        className="category-grid"
-                        variants={staggerGrid} initial="hidden" whileInView="show" viewport={{ once: true }}
-                    >
-                        <motion.div variants={staggerItem}>
-                            <Link to="/shop/vibrators" className="category-card" style={{ height: '100%' }}>
-                                <div className="cat-img placeholder-vibe" />
-                                <div className="cat-overlay" />
-                                <div className="cat-info">
-                                    <div className="cat-info-left">
-                                        <div className="cat-eyebrow">Solo Play</div>
-                                        <h3>Vibrations</h3>
-                                    </div>
-                                    <div className="cat-arrow"><i className="fa fa-arrow-right" /></div>
-                                </div>
-                            </Link>
-                        </motion.div>
-
-                        <motion.div variants={staggerItem}>
-                            <Link to="/shop/bdsm" className="category-card" style={{ height: '100%' }}>
-                                <div className="cat-img placeholder-bdsm" />
-                                <div className="cat-overlay" />
-                                <div className="cat-info">
-                                    <div className="cat-info-left">
-                                        <div className="cat-eyebrow">Dominance</div>
-                                        <h3>The Dark Room</h3>
-                                    </div>
-                                    <div className="cat-arrow"><i className="fa fa-arrow-right" /></div>
-                                </div>
-                            </Link>
-                        </motion.div>
-
-                        <motion.div variants={staggerItem} style={{ gridColumn: 'span 2' }}>
-                            <Link to="/shop/couples" className="category-card category-card--wide" style={{ height: '380px' }}>
-                                <div className="cat-img placeholder-couple" />
-                                <div className="cat-overlay" />
-                                <div className="cat-info">
-                                    <div className="cat-info-left">
-                                        <div className="cat-eyebrow">Together</div>
-                                        <h3>Union</h3>
-                                    </div>
-                                    <div className="cat-arrow"><i className="fa fa-arrow-right" /></div>
-                                </div>
-                            </Link>
-                        </motion.div>
+                    <motion.div className="category-definition-grid" variants={staggerGrid} initial="hidden" whileInView="show" viewport={{ once: true }}>
+                        {categoryDefinitions.map((category) => {
+                            const categoryCount = inventoryProducts.filter((item) => item.type === category.key).length;
+                            return (
+                                <motion.div key={category.key} variants={staggerItem}>
+                                    <Link to={category.route} className="category-definition-card">
+                                        <div className={`cat-img ${category.placeholder}`} />
+                                        <div className="cat-overlay" />
+                                        <div className="cat-info">
+                                            <div className="cat-info-left">
+                                                <div className="cat-eyebrow">{category.sub}</div>
+                                                <h3>{category.title}</h3>
+                                                <p className="cat-count">{categoryCount} products</p>
+                                            </div>
+                                            <div className="cat-arrow"><i className="fa fa-arrow-right" /></div>
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
                 </div>
             </section>
@@ -183,11 +180,9 @@ const Home = () => {
                                     <Link to={`/product/${item.id}`}>
                                         <h4 title={item.name}>{item.name}</h4>
                                     </Link>
-                                    <p className="price">{item.price}</p>
-                                    <div className="product-actions">
-                                        <Link to={`/product/${item.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
-                                        <Link to={`/product/${item.id}`} className="btn btn-outline btn-small">View</Link>
-                                    </div>
+                                    <p className={`stock-badge ${item.inventory.stockClass}`}>{item.inventory.stockLabel}</p>
+                                    <p className="price-hidden-copy">Price hidden - contact for quote</p>
+                                    <QuoteActions productName={item.name} locationTag="home_best_sellers" />
                                 </div>
                             </motion.div>
                         ))}
@@ -226,7 +221,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ─ BEGINNER PICKS ─ */}
+            {/* ─ CATEGORY HIGHLIGHTS ─ */}
             <section className="section">
                 <div className="container">
                     <motion.div
@@ -234,16 +229,16 @@ const Home = () => {
                         initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }} transition={{ duration: 0.8 }}
                     >
-                        <div className="section-eyebrow">Start Here</div>
-                        <h2 className="section-title">Beginner Picks</h2>
-                        <p className="section-sub">Gentle, approachable, and loved by first-timers. Perfect starting point.</p>
+                        <div className="section-eyebrow">Category Highlights</div>
+                        <h2 className="section-title">Shop by Category</h2>
+                        <p className="section-sub">A curated pick from each core category so customers can browse faster with less friction.</p>
                     </motion.div>
 
                     <motion.div
                         className="product-grid"
                         variants={staggerGrid} initial="hidden" whileInView="show" viewport={{ once: true }}
                     >
-                        {beginnerPicks.map((item) => (
+                        {categoryHighlights.map((item) => (
                             <motion.div key={item.id} className="product-card" variants={staggerItem}>
                                 <Link to={`/product/${item.id}`} className="product-card-link">
                                     <div className="product-img">
@@ -251,7 +246,7 @@ const Home = () => {
                                             className="product-img-inner"
                                             style={{ backgroundImage: `url(${item.image})` }}
                                         />
-                                        <div className="product-badge product-badge--beginner">Beginner</div>
+                                        <div className="product-badge product-badge--beginner">{item.type}</div>
                                     </div>
                                 </Link>
                                 <div className="product-info">
@@ -264,11 +259,9 @@ const Home = () => {
                                     <Link to={`/product/${item.id}`}>
                                         <h4 title={item.name}>{item.name}</h4>
                                     </Link>
-                                    <p className="price">{item.price}</p>
-                                    <div className="product-actions">
-                                        <Link to={`/product/${item.id}`} className="btn btn-primary btn-small">Add to Cart</Link>
-                                        <Link to={`/product/${item.id}`} className="btn btn-outline btn-small">View</Link>
-                                    </div>
+                                    <p className={`stock-badge ${item.inventory.stockClass}`}>{item.inventory.stockLabel}</p>
+                                    <p className="price-hidden-copy">Price hidden - contact for quote</p>
+                                    <QuoteActions productName={item.name} locationTag="home_category_highlights" />
                                 </div>
                             </motion.div>
                         ))}
