@@ -1,5 +1,6 @@
 import { SALES_EMAIL, SALES_PHONE } from '../utils/inventory';
 import { getVariantConfig, trackExperimentClick } from '../utils/experiments';
+import { trackAddCart } from '../utils/analytics';
 
 const QuoteActions = ({ productName, locationTag }) => {
   const config = getVariantConfig();
@@ -10,7 +11,10 @@ const QuoteActions = ({ productName, locationTag }) => {
     <a
       href={`tel:${sanitizedPhone}`}
       className="btn btn-primary btn-small"
-      onClick={() => trackExperimentClick('call_click', locationTag)}
+      onClick={() => {
+        trackExperimentClick('call_click', locationTag);
+        trackAddCart({ name: productName });
+      }}
     >
       {config.callCta}
     </a>
@@ -20,7 +24,10 @@ const QuoteActions = ({ productName, locationTag }) => {
     <a
       href={`mailto:${SALES_EMAIL}?subject=Price inquiry for ${encodedName}`}
       className="btn btn-outline btn-small"
-      onClick={() => trackExperimentClick('email_click', locationTag)}
+      onClick={() => {
+        trackExperimentClick('email_click', locationTag);
+        trackAddCart({ name: productName });
+      }}
     >
       {config.emailCta}
     </a>

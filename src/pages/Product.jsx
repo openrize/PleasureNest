@@ -1,9 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import products from '../data/products.json';
 import QuoteActions from '../components/QuoteActions';
 import { SALES_EMAIL, SALES_PHONE, withInventory } from '../utils/inventory';
+import { trackProductView, trackCheckout } from '../utils/analytics';
 
 const StarRating = ({ rating = 4.7, count = 48 }) => (
     <div className="product-stars-detail">
@@ -49,7 +50,20 @@ const Product = () => {
 
     const related = products.filter(p => p.type === product.type && p.id !== product.id).map(withInventory).slice(0, 3);
 
-    const levelMap = { vibrators: 'Beginner', couples: 'Intermediate', bdsm: 'Advanced', wellness: 'Beginner', dildos: 'Intermediate' };
+    useEffect(() => {
+        if (product?.id) trackProductView(product);
+    }, [product?.id]);
+
+    const categoryLabels = {
+        vibrators: 'Self-Care',
+        couples: 'Couples',
+        bdsm: 'Advanced Wellness',
+        wellness: 'Wellness',
+        dildos: 'Personal Wellness',
+    };
+    const categoryLabel = categoryLabels[product.type] || 'Wellness';
+
+    const levelMap = { vibrators: 'Beginner', couples: 'All Levels', bdsm: 'Advanced', wellness: 'Beginner', dildos: 'Intermediate' };
     const level = levelMap[product.type] || 'All Levels';
 
     const faqItems = [
@@ -97,7 +111,7 @@ const Product = () => {
                             <span className={`level-pill level-${level.toLowerCase().replace(' ', '-')}`}>
                                 {level}
                             </span>
-                            <span className="type-pill">{product.type}</span>
+                            <span className="type-pill">{categoryLabel}</span>
                         </div>
 
                         <h1>{product.name}</h1>
@@ -110,21 +124,29 @@ const Product = () => {
                         {/* Spec Table */}
                         <div className="spec-table">
                             <div className="spec-row"><span>Material</span><span>Medical-grade silicone</span></div>
-                            <div className="spec-row"><span>Waterproof</span><span>✓ IPX7</span></div>
-                            <div className="spec-row"><span>Rechargeable</span><span>✓ USB-C</span></div>
-                            <div className="spec-row"><span>Vibration Modes</span><span>10 patterns</span></div>
+                            <div className="spec-row"><span>Dimensions</span><span>Compact, ergonomic design</span></div>
+                            <div className="spec-row"><span>Waterproof</span><span>IPX7 rated</span></div>
+                            <div className="spec-row"><span>Rechargeable</span><span>USB-C</span></div>
+                            <div className="spec-row"><span>Modes</span><span>10 vibration patterns</span></div>
                             <div className="spec-row"><span>SKU</span><span>PN-{product.id?.toString().padStart(4,'0')}</span></div>
-                            <div className="spec-row"><span>Inventory Units</span><span>{product.inventory.units}</span></div>
+                        </div>
+
+                        {/* How to Use */}
+                        <div className="how-to-use-box">
+                            <strong><i className="fa fa-book" /> How to Use</strong>
+                            <p>Apply a water-based lubricant if desired. Start on the lowest setting and explore at your own pace. Always clean before and after use. Store in the included pouch in a cool, dry place.</p>
                         </div>
 
                         <div className="quote-box">
-                            <h3>Request Wholesale/Retail Pricing</h3>
-                            <p>For exact price and minimum order details, contact our sales team directly.</p>
+                            <h3>Request Pricing</h3>
+                            <p>Contact our wellness advisors for personalized pricing and recommendations.</p>
                             <div className="quote-contact-line">
                                 <span><i className="fa fa-phone" /> {SALES_PHONE}</span>
                                 <span><i className="fa fa-envelope" /> {SALES_EMAIL}</span>
                             </div>
-                            <QuoteActions productName={product.name} locationTag="product_detail" />
+                            <div onClick={() => trackCheckout({ productId: product.id })}>
+                                <QuoteActions productName={product.name} locationTag="product_detail" />
+                            </div>
                         </div>
 
                         {/* Discreet Shipping Note */}

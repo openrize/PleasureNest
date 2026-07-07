@@ -14,11 +14,11 @@ const Category = () => {
     const inventoryStats = getInventoryStats(products);
 
     const categoryTitles = {
-        'vibrators': 'Premium Vibrators',
-        'dildos': 'Sculptural Dildos',
-        'couples': 'Couples Play',
-        'bdsm': 'The Dark Room',
-        'wellness': 'Wellness & Care'
+        vibrators: 'Self-Care Collection',
+        dildos: 'Personal Wellness',
+        couples: 'Couples & Connection',
+        bdsm: 'Advanced Wellness',
+        wellness: 'Wellness Essentials',
     };
 
     useEffect(() => {
@@ -37,37 +37,39 @@ const Category = () => {
 
     const tabs = [
         { label: 'All', path: '/shop' },
-        { label: 'Vibrators', path: '/shop/vibrators' },
+        { label: 'Self-Care', path: '/shop/vibrators' },
         { label: 'Couples', path: '/shop/couples' },
-        { label: 'BDSM', path: '/shop/bdsm' },
         { label: 'Wellness', path: '/shop/wellness' },
-        { label: 'Dildos', path: '/shop/dildos' },
+        { label: 'Personal', path: '/shop/dildos' },
     ];
 
     const container = {
         hidden: { opacity: 0 },
-        show: { opacity: 1, transition: { staggerChildren: 0.08 } }
+        show: { opacity: 1, transition: { staggerChildren: 0.06 } }
     };
     const item = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: 16 },
         show: { opacity: 1, y: 0 }
     };
 
     return (
-        <section className="section" style={{ minHeight: '80vh', paddingTop: '100px' }}>
+        <section className="section" style={{ minHeight: '80vh', paddingTop: '120px' }}>
             <div className="container">
-                {/* Page title */}
-                <motion.h1
+                <motion.div
                     key={type}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4 }}
-                    style={{ textAlign: 'center', marginBottom: '16px' }}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="section-header"
+                    style={{ marginBottom: '40px' }}
                 >
-                    {type ? categoryTitles[type] : 'Shop All'}
-                </motion.h1>
+                    <div className="section-eyebrow">Shop</div>
+                    <h1 className="section-title">{type ? categoryTitles[type] : 'All Products'}</h1>
+                    <p className="section-sub">
+                        Premium intimacy wellness, curated for comfort and confidence.
+                    </p>
+                </motion.div>
 
-                {/* Category Tabs */}
                 <div className="cat-tabs">
                     {tabs.map(tab => (
                         <Link
@@ -80,7 +82,6 @@ const Category = () => {
                     ))}
                 </div>
 
-                {/* Filter Bar */}
                 <div className="filter-bar">
                     <div className="filter-toggles">
                         <label className="filter-toggle">
@@ -89,66 +90,50 @@ const Category = () => {
                         </label>
                         <label className="filter-toggle">
                             <input type="checkbox" checked={inStockOnly} onChange={e => setInStockOnly(e.target.checked)} />
-                            <span>In-Stock Only</span>
+                            <span>In Stock</span>
                         </label>
                     </div>
 
                     <div className="filter-right">
                         <span className="product-count">{filtered.length} products</span>
                         <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)}>
-                            <option value="featured">Sort: Featured</option>
-                            <option value="stock-high">Inventory: High → Low</option>
-                            <option value="low-stock">Low Stock First</option>
-                            <option value="newest">Newest First</option>
+                            <option value="featured">Featured</option>
+                            <option value="stock-high">Availability</option>
+                            <option value="newest">Newest</option>
                         </select>
                     </div>
                 </div>
-                <div className="inventory-summary">
-                    <div className="inventory-chip stock-in">In stock: {inventoryStats.inStock}</div>
-                    <div className="inventory-chip stock-low">Low stock: {inventoryStats.lowStock}</div>
-                    <div className="inventory-chip stock-out">Out of stock: {inventoryStats.outOfStock}</div>
+
+                <div className="inventory-chips">
+                    <span className="inv-chip inv-chip--in">{inventoryStats.inStock} in stock</span>
+                    <span className="inv-chip inv-chip--low">{inventoryStats.lowStock} low stock</span>
+                    <span className="inv-chip inv-chip--out">{inventoryStats.outOfStock} unavailable</span>
                 </div>
 
-                {/* Grid */}
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={type + sort + beginner + inStockOnly}
+                        key={`${type}-${sort}-${beginner}-${inStockOnly}`}
                         className="product-grid"
                         variants={container}
                         initial="hidden"
                         animate="show"
                     >
-                        {(!filtered || filtered.length === 0) ? (
-                            <p style={{ color: 'var(--text-secondary)', gridColumn: '1/-1', textAlign: 'center', padding: '60px 0' }}>
-                                No products match your filters. Try adjusting them.
-                            </p>
-                        ) : filtered.map(product => {
-                            if (!product || !product.id) return null;
-                            return (
-                                <motion.div key={product.id} className="product-card" variants={item}>
-                                    <Link to={`/product/${product.id}`} className="product-card-link">
-                                        <div className="product-img">
-                                            <div
-                                                className="product-img-inner"
-                                                style={{ backgroundImage: `url("${product.image || ''}")` }}
-                                            />
-                                        </div>
-                                    </Link>
-                                    <div className="product-info">
-                                        <div className="product-stars">
-                                            {'★★★★★'.split('').map((s, i) => <span key={i} className="star">{s}</span>)}
-                                            <span className="star-count">(24)</span>
-                                        </div>
-                                        <Link to={`/product/${product.id}`}>
-                                            <h4 title={product.name || 'Product'}>{product.name || 'Product'}</h4>
-                                        </Link>
-                                        <p className={`stock-badge ${product.inventory.stockClass}`}>{product.inventory.stockLabel}</p>
-                                        <p className="price-hidden-copy">Price hidden - request quote via call or email</p>
-                                        <QuoteActions productName={product.name || 'Product'} locationTag="category_grid" />
+                        {filtered.map(p => (
+                            <motion.div key={p.id} className="product-card" variants={item}>
+                                <Link to={`/product/${p.id}`} className="product-card-link">
+                                    <div className="product-img">
+                                        <div className="product-img-inner" style={{ backgroundImage: `url(${p.image})` }} />
                                     </div>
-                                </motion.div>
-                            );
-                        })}
+                                </Link>
+                                <div className="product-info">
+                                    <Link to={`/product/${p.id}`}>
+                                        <h4 title={p.name}>{p.name}</h4>
+                                    </Link>
+                                    <p className={`stock-badge ${p.inventory.stockClass}`}>{p.inventory.stockLabel}</p>
+                                    <QuoteActions productName={p.name} locationTag="category_grid" />
+                                </div>
+                            </motion.div>
+                        ))}
                     </motion.div>
                 </AnimatePresence>
             </div>

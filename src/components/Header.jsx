@@ -7,7 +7,7 @@ const Header = () => {
     const location = useLocation();
 
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 60);
+        const onScroll = () => setScrolled(window.scrollY > 40);
         window.addEventListener('scroll', onScroll);
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
@@ -15,19 +15,21 @@ const Header = () => {
     useEffect(() => { setMenuOpen(false); }, [location]);
 
     const navLinks = [
-        { to: '/shop', label: 'Shop All' },
-        { to: '/shop/vibrators', label: 'Best Sellers' },
-        { to: '/shop/wellness', label: 'New Arrivals' },
-        { to: '/guides', label: 'Guides' },
+        { to: '/shop', label: 'Shop' },
+        { to: '/collections', label: 'Collections' },
+        { to: '/wellness', label: 'Wellness' },
+        { to: '/education', label: 'Education' },
+        { to: '/about', label: 'About' },
         { to: '/faq', label: 'FAQ' },
         { to: '/contact', label: 'Contact' },
+        { to: '/rewards', label: 'Rewards' },
     ];
 
     return (
         <header className={scrolled ? 'scrolled' : ''}>
             <div className="container nav-container">
                 <Link to="/" className="logo">
-                    <img src="/logo.png" alt="PleasureNest" style={{ height: '50px' }} />
+                    <img src="/logo.png" alt="Pleasure Nest" style={{ height: '44px' }} />
                 </Link>
 
                 <nav>
@@ -39,7 +41,6 @@ const Header = () => {
                                     className={({ isActive }) => isActive ? 'active-link' : ''}
                                     onClick={() => {
                                         setMenuOpen(false);
-                                        // Force navigation for mobile if needed
                                         if (window.innerWidth <= 768) {
                                             window.scrollTo(0, 0);
                                         }
@@ -54,7 +55,6 @@ const Header = () => {
 
                 <div className="nav-icons">
                     <Link to="/shop" aria-label="Search"><i className="fa fa-search" /></Link>
-                    <Link to="/shop" aria-label="Cart"><i className="fa fa-shopping-bag" /></Link>
                     <button
                         className="mobile-toggle"
                         aria-label="Toggle menu"

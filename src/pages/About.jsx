@@ -37,7 +37,7 @@ const About = () => {
                     <div className="section-eyebrow">Our Story</div>
                     <h1>Redefining Intimate Wellness</h1>
                     <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginTop: '20px' }}>
-                        PleasureNest was born from a simple belief: everyone deserves access to high-quality, body-safe intimate products in a space that feels welcoming, private, and premium.
+                        Pleasure Nest was born from a simple belief: everyone deserves access to premium intimacy wellness in a space that feels welcoming, private, and refined.
                     </p>
                 </motion.div>
 
@@ -62,8 +62,8 @@ const About = () => {
                 >
                     <div className="about-story-panel">
                         <h2>Why We Started</h2>
-                        <p>We noticed that most adult stores fell into one of two extremes — either clinical and cold, or cheap and tacky. Neither felt right for people exploring intimacy and wellness with intention.</p>
-                        <p>PleasureNest was designed to feel like a luxurious, private boutique — a space where you can browse, learn, and buy without judgment, anxiety, or compromise on quality.</p>
+                        <p>We noticed that most stores in this space fell into two extremes — clinical and cold, or cheap and tacky. Neither felt right for people exploring intimacy and wellness with intention.</p>
+                        <p>Pleasure Nest was designed to feel like a luxurious wellness boutique — a space where you can browse, learn, and shop without judgment, anxiety, or compromise on quality.</p>
                     </div>
                     <div className="about-story-panel">
                         <h2>Our Promise</h2>

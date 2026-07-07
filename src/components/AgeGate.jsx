@@ -23,21 +23,20 @@ const AgeGate = () => {
         <div className="age-gate-overlay">
             <div className="age-gate-card">
                 <div className="age-gate-logo-container" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'center' }}>
-                    <img src="/logo.png" alt="PleasureNest" style={{ height: '70px' }} />
+                    <img src="/logo.png" alt="Pleasure Nest" style={{ height: '60px' }} />
                 </div>
                 <div className="age-gate-badge">18+</div>
-                <h2>Adults Only</h2>
+                <h2>Welcome to Pleasure Nest</h2>
                 <p>
-                    This website contains adult content intended for individuals
-                    18 years of age or older. By entering, you confirm that you
-                    are at least 18 years old and agree to our Terms of Service.
+                    This site offers intimacy wellness products intended for adults 18 and older.
+                    By entering, you confirm you are at least 18 and agree to our terms of service.
                 </p>
                 <div className="age-gate-note">
-                    <i className="fa fa-lock" /> &nbsp;Discreet billing &amp; packaging, always.
+                    <i className="fa fa-lock" /> Discreet packaging and billing, always.
                 </div>
                 <div className="age-gate-actions">
                     <button className="btn btn-primary age-gate-enter" onClick={handleEnter}>
-                        I'm 18+ – Enter Site
+                        Enter — I am 18+
                     </button>
                     <button className="btn btn-outline age-gate-exit" onClick={handleExit}>
                         Exit
